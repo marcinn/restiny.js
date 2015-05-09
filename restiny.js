@@ -51,10 +51,10 @@ var Restiny = function(url, config) {
         $.ajax({
             url: resourceToUrl(resource),
             type: type,
-            dataType: 'json',
-            contentType: 'application/json',
+            dataType: type=='GET' ? null : 'json',
+            contentType: type=='GET' ? null : 'application/json',
             headers: completeHeaders,
-            data: typeof(data)!=='undefined' && data!==null ? JSON.stringify(data) : null
+            data: typeof(data)!=='undefined' && data!==null ? (type=='GET' ? data : JSON.stringify(data)) : null
         }).then(function(respData,respStatus,jqXhr) {
             dfr.resolve(respData, makeResponseObject(jqXhr, respData));
         }, function(jqXhr) {
