@@ -1,0 +1,24 @@
+<html>
+    <body ng-app="restinyDemo">
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+        <script src="./restiny.min.js"></script>
+        <script type="text/javascript">
+
+            angular.module('restinyDemo', [
+                'restiny'
+            ])
+            .run(function(restiny) {
+                var github = restiny.api('https://api.github.com');
+
+                github.get('users/marcinn').then(function(resp) {
+                    github.get(resp.data.followers_url).then(function(resp) {
+                        console.log(resp.data);
+                    });
+                });
+            });
+
+
+        </script>
+    </body>
+</html>
