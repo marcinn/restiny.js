@@ -11,6 +11,7 @@ hour, not tested, and not reliable. But extremely simple to use :)
 
 
 An example of hitting GitHub API and fetching my followers (using jQuery).
+[Test on JSFiddle](https://jsfiddle.net/nzdhk85q/embedded/result/).
 
 ```javascript
 
