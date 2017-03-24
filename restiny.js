@@ -106,8 +106,8 @@
             }
         }
 
-        function doMethod(type, resource, data, headers) {
-            return self._adapter.doMethod(type, resourceToUrl(resource), data, headers);
+        function doMethod(type, resource, data, headers, opts) {
+            return self._adapter.doMethod(type, resourceToUrl(resource), data, headers, opts);
         };
 
         this.resource = function(path) {
@@ -131,42 +131,46 @@
             return this.headers({accept: contentType});
         }
 
-        this.get = function(resource, params, headers) {
-            return doMethod('GET', resource, params, headers);
+        this.get = function(resource, params, headers, opts) {
+            return doMethod('GET', resource, params, headers, opts);
         }
 
-        this.post = function(resource, payload, headers) {
-            return doMethod('POST', resource, payload, headers);
+        this.post = function(resource, payload, headers, opts) {
+            return doMethod('POST', resource, payload, headers, opts);
         }
 
-        this.put = function(resource, payload, headers) {
-            return doMethod('PUT', resource, payload, headers);
+        this.put = function(resource, payload, headers, opts) {
+            return doMethod('PUT', resource, payload, headers, opts);
         }
 
-        this.patch = function(resource, payload, headers) {
-            return doMethod('PATCH', resource, payload, headers);
+        this.patch = function(resource, payload, headers, opts) {
+            return doMethod('PATCH', resource, payload, headers, opts);
         }
 
-        this['delete'] = function(resource, headers) {
-            return doMethod('DELETE', resource, null, headers);
+        this['delete'] = function(resource, headers, opts) {
+            return doMethod('DELETE', resource, null, headers, opts);
         }
     };
 
     window.angular ? angular.module('restiny', [])
         .factory('restiny', ['$http', '$q', function($http, $q) {
             var angularRestinyAdapter = function(restiny) {
-                this.doMethod = function(type, url, data, headers) {
+                this.doMethod = function(type, url, data, headers, opts) {
                     var dfr = $q.defer(),
-                    completeHeaders = angular.extend({}, restiny._defaultHeaders, headers),
+                        completeHeaders = angular.extend({}, restiny._defaultHeaders, headers),
+                        callOpts = angular.extend({}, opts||{});
+
                     params = type.toLowerCase()=='get';
 
-                    $http({
+                    angular.extend(callOpts, {
                         method: type,
                         url: url,
                         headers: completeHeaders,
                         data: params ? null : data,
                         params: params ? data : null
-                    }).then(function(resp) {
+                    });
+                    
+                    $http(callOpts).then(function(resp) {
                         dfr.resolve(resp);
                     }, function(resp) {
                         dfr.reject(resp);
